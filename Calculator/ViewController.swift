@@ -50,6 +50,14 @@ class ViewController: UIViewController {
         
     }
     
+    
+    @IBAction func clear() {
+        displayValue = 0
+        oprandStack.removeAll()
+        userIsInTheMiddleOfTypingANumber = false
+        println("cleared")
+    }
+    
     func performOperation(operation: (Double, Double) -> Double) {
         if oprandStack.count >= 2 {
             displayValue = operation(oprandStack.removeLast(), oprandStack.removeLast())
