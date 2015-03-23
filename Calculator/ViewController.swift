@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     
     var userIsInTheMiddleOfTypingANumber = false
     
+    var brain = CalculatorBrain()
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -30,24 +31,18 @@ class ViewController: UIViewController {
     
     
     @IBAction func operate(sender: UIButton) {
-        let operation = sender.currentTitle!
-
         if userIsInTheMiddleOfTypingANumber {
             enter()
         }
-        
-        switch operation {
-        case "×": performOperation {$0 * $1}
-        case "÷": performOperation {$1 / $0}
-        case "+": performOperation {$0 + $1}
-        case "−": performOperation {$1 - $0}
-        case "√": performOperation {sqrt($0)}
-        case "sin": performOperation {sin($0)}
-        case "cos": performOperation {cos($0)}
-        case "π": performOperation {$0 * 3.1415926}
-        default: break
+    
+        if let operation = sender.currentTitle {
+            if let result = brain.performOperation(operation) {
+                displayValue = result
+            } else {
+                displayValue = 0
+            }
         }
-        
+
     }
     
     
@@ -85,8 +80,13 @@ class ViewController: UIViewController {
         if displayValue == nil {
             return
         }
-        oprandStack.append(displayValue!)
-        println("oprandStack: \(oprandStack)")
+        if let result = brain.pushOprand(displayValue!) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
+//        oprandStack.append(displayValue!)
+//        println("oprandStack: \(oprandStack)")
         
         updateHistory()
     }
