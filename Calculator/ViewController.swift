@@ -29,7 +29,27 @@ class ViewController: UIViewController {
         }
     }
     
+    // enter() is used to push the current operand into brain/stack
+    @IBAction func enter() {
+        userIsInTheMiddleOfTypingANumber = false
+        if displayValue == nil {
+            return
+        }
+        if let result = brain.pushOprand(displayValue!) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
+        //        oprandStack.append(displayValue!)
+        //        println("oprandStack: \(oprandStack)")
+        
+        updateHistory()
+    }
     
+    // operate() is used to performOperation on the current operand (or with 
+    // the previous operand)
+    // so we need to call enter() again to push the current operand into brain/stack
+    // after the result is caculated, the result should also be pushed into brain/stack
     @IBAction func operate(sender: UIButton) {
         if userIsInTheMiddleOfTypingANumber {
             enter()
@@ -45,50 +65,33 @@ class ViewController: UIViewController {
 
     }
     
-    
     @IBAction func clear() {
         displayValue = 0
-        oprandStack.removeAll()
+        brain.clear()
         userIsInTheMiddleOfTypingANumber = false
         println("cleared")
     }
     
-    func performOperation(operation: (Double, Double) -> Double) {
-        if oprandStack.count >= 2 {
-            displayValue = operation(oprandStack.removeLast(), oprandStack.removeLast())
-            enter()
-        }
-    }
+//    func performOperation(operation: (Double, Double) -> Double) {
+//        brain.evaluate()
+//        if oprandStack.count >= 2 {
+//            displayValue = operation(oprandStack.removeLast(), oprandStack.removeLast())
+//            enter()
+//        }
+//    }
     
-    func performOperation(operation: (Double) -> Double) {
-        if oprandStack.count >= 1 {
-            displayValue = operation(oprandStack.removeLast())
-            enter()
-        }
-    }
+//    func performOperation(operation: (Double) -> Double) {
+//        if oprandStack.count >= 1 {
+//            displayValue = operation(oprandStack.removeLast())
+//            enter()
+//        }
+//    }
+//    
     
-    
-    var oprandStack = Array<Double>()
     
     func updateHistory () {
-        let text = "\(oprandStack)"
-        history.text = text
-    }
-    
-    @IBAction func enter() {
-        userIsInTheMiddleOfTypingANumber = false
-        if displayValue == nil {
-            return
-        }
-        if let result = brain.pushOprand(displayValue!) {
-            displayValue = result
-        } else {
-            displayValue = 0
-        }
-//        oprandStack.append(displayValue!)
-//        println("oprandStack: \(oprandStack)")
-        
-        updateHistory()
+//        let text = "\(oprandStack)"
+//        history.text = text
     }
     
     var displayValue: Double? {
