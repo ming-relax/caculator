@@ -40,8 +40,6 @@ class ViewController: UIViewController {
         } else {
             displayValue = 0
         }
-        //        oprandStack.append(displayValue!)
-        //        println("oprandStack: \(oprandStack)")
         
         updateHistory()
     }
@@ -72,22 +70,6 @@ class ViewController: UIViewController {
         println("cleared")
     }
     
-//    func performOperation(operation: (Double, Double) -> Double) {
-//        brain.evaluate()
-//        if oprandStack.count >= 2 {
-//            displayValue = operation(oprandStack.removeLast(), oprandStack.removeLast())
-//            enter()
-//        }
-//    }
-    
-//    func performOperation(operation: (Double) -> Double) {
-//        if oprandStack.count >= 1 {
-//            displayValue = operation(oprandStack.removeLast())
-//            enter()
-//        }
-//    }
-//    
-    
     
     func updateHistory () {
 //        let text = "\(oprandStack)"
@@ -110,7 +92,5 @@ class ViewController: UIViewController {
             userIsInTheMiddleOfTypingANumber = false
         }
     }
-    
-
 }
 
