@@ -12,6 +12,7 @@ import Foundation
 class CalculatorBrain {
     private enum Op: Printable {
         case Oprand(Double)
+        case Variable(String)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
         
@@ -24,6 +25,8 @@ class CalculatorBrain {
                     return symbol
                 case .BinaryOperation(let symbol, _):
                     return symbol
+                case .Variable(let variable):
+                    return variable
                 }
             }
         }
@@ -40,6 +43,12 @@ class CalculatorBrain {
             switch op {
             case .Oprand(let oprand):
                 return (oprand, remainingOps)
+            case .Variable(let symbol):
+                if let variable = variableValues[symbol] {
+                    return (variable, remainingOps)
+                } else {
+                    return (nil, remainingOps)
+                }
             case .UnaryOperation(_, let operation):
                 let operationEvaluation = evaluate(remainingOps)
                 if let operand = operationEvaluation.result {
@@ -73,6 +82,8 @@ class CalculatorBrain {
         learnOp(Op.UnaryOperation("cos", cos))
     }
     
+    var variableValues = Dictionary<String, Double>()
+    
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder) left over")
@@ -81,6 +92,11 @@ class CalculatorBrain {
     
     func pushOprand(oprand: Double) -> Double? {
         opStack.append(Op.Oprand(oprand))
+        return evaluate()
+    }
+    
+    func pushOprand(symbol: String) -> Double? {
+        opStack.append(Op.Variable(symbol))
         return evaluate()
     }
     

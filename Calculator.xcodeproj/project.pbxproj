@@ -80,8 +80,8 @@
 			isa = PBXGroup;
 			children = (
 				6D610F7A1AB420560062A57C /* ViewController.swift */,
-				6D610F7C1AB420560062A57C /* Main.storyboard */,
 				6D75E6EE1AC04FD800BFEE0B /* CalculatorBrain.swift */,
+				6D610F7C1AB420560062A57C /* Main.storyboard */,
 				6D610F761AB420560062A57C /* Supporting Files */,
 			);
 			path = Calculator;
