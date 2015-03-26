@@ -9,7 +9,7 @@
 import Foundation
 
 
-class CalculatorBrain {
+class CalculatorBrain: Printable {
     private enum Op: Printable {
         case Oprand(Double)
         case Variable(String)
@@ -83,6 +83,13 @@ class CalculatorBrain {
     }
     
     var variableValues = Dictionary<String, Double>()
+    
+    // description of the brain
+    var description :String {
+        get {
+            return ""
+        }
+    }
     
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
