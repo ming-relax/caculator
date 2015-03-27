@@ -78,11 +78,8 @@ class ViewController: UIViewController {
     
     var displayValue: Double? {
         get {
-            if display.text == nil {
-                return nil
-            }
             
-            if display.text! == "π" {
+            if display.text? == "π" {
                 return 3.1415926
             }
             return NSNumberFormatter().numberFromString(display.text!)?.doubleValue
