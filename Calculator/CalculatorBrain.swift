@@ -12,6 +12,7 @@ import Foundation
 class CalculatorBrain: Printable {
     private enum Op: Printable {
         case Oprand(Double)
+        case Constant(String)
         case Variable(String)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
@@ -25,6 +26,8 @@ class CalculatorBrain: Printable {
                     return symbol
                 case .BinaryOperation(let symbol, _):
                     return symbol
+                case .Constant(let symbol):
+                    return symbol
                 case .Variable(let variable):
                     return variable
                 }
@@ -36,6 +39,10 @@ class CalculatorBrain: Printable {
     
     private var knownOps = [String:Op]()
     
+    private var constantMapping = [
+        "π": 3.1415926
+    ]
+    
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOps = ops
@@ -43,6 +50,8 @@ class CalculatorBrain: Printable {
             switch op {
             case .Oprand(let oprand):
                 return (oprand, remainingOps)
+            case .Constant(let symbol):
+                return (constantMapping[symbol], remainingOps)
             case .Variable(let symbol):
                 if let variable = variableValues[symbol] {
                     return (variable, remainingOps)
@@ -103,9 +112,14 @@ class CalculatorBrain: Printable {
     }
     
     func pushOprand(symbol: String) -> Double? {
-        opStack.append(Op.Variable(symbol))
+        if constantMapping[symbol] != nil {
+            opStack.append(Op.Constant(symbol))
+        } else {
+            opStack.append(Op.Variable(symbol))
+        }
         return evaluate()
     }
+    
     
     func performOperation(symbol: String) -> Double? {
         if let operation = knownOps[symbol] {

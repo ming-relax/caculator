@@ -29,6 +29,11 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func enterConstant(sender: UIButton) {
+        let symbol = sender.currentTitle!
+        display.text = symbol
+        enter()
+    }
     // enter() is used to push the current operand into brain/stack
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
