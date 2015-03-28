@@ -83,8 +83,8 @@ class CalculatorBrain: Printable {
     // description of the brain
     var description :String {
         get {
-            let result = evaluate(opStack, currentDesciption: "")
-            return result.resultDscription!
+            let (_, resultDescription, _) = evaluate(opStack, currentDesciption: "")
+            return resultDescription!
         }
     }
 

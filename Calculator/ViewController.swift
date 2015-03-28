@@ -100,8 +100,7 @@ class ViewController: UIViewController {
     
     
     func updateHistory () {
-//        let text = "\(oprandStack)"
-//        history.text = text
+        history.text = "\(brain)"
     }
     
     var displayValue: Double? {
