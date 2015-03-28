@@ -43,39 +43,51 @@ class CalculatorBrain: Printable {
         "π": 3.1415926
     ]
     
-    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
+    
+    private func evaluate(ops: [Op], currentDesciption: String?) -> (result: Double?, resultDscription: String?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOps = ops
             let op = remainingOps.removeLast()
             switch op {
             case .Oprand(let oprand):
-                return (oprand, remainingOps)
+                return (oprand, currentDesciption! + "\(oprand)", remainingOps)
             case .Constant(let symbol):
-                return (constantMapping[symbol], remainingOps)
+                return (constantMapping[symbol], currentDesciption! + symbol, remainingOps)
             case .Variable(let symbol):
                 if let variable = variableValues[symbol] {
-                    return (variable, remainingOps)
+                    return (variable, "variable", remainingOps)
                 } else {
-                    return (nil, remainingOps)
+                    return (nil, "varialbe", remainingOps)
                 }
-            case .UnaryOperation(_, let operation):
-                let operationEvaluation = evaluate(remainingOps)
+            case .UnaryOperation(let symbol, let operation):
+                let operationEvaluation = evaluate(remainingOps, currentDesciption: currentDesciption)
                 if let operand = operationEvaluation.result {
-                   return (operation(operand), operationEvaluation.remainingOps)
+                   return (operation(operand), "\(symbol)(\(operationEvaluation.resultDscription!))", operationEvaluation.remainingOps)
                 }
-            case .BinaryOperation(_, let operation):
-                let op1Evaluation = evaluate(remainingOps)
+            case .BinaryOperation(let symbol, let operation):
+                let op1Evaluation = evaluate(remainingOps, currentDesciption: "")
                 if let operand1 = op1Evaluation.result {
-                    let op2Evaluation = evaluate(op1Evaluation.remainingOps)
+                    let op2Evaluation = evaluate(op1Evaluation.remainingOps, currentDesciption: "")
                     if let operand2 = op2Evaluation.result {
-                        return (operation(operand1, operand2), op2Evaluation.remainingOps)
+                        return (operation(operand1, operand2), "\(currentDesciption!) \(op1Evaluation.resultDscription!) \(symbol) \(op2Evaluation.resultDscription!)", op2Evaluation.remainingOps)
                     }
                 }
             }
         }
-        return (nil, ops)
+        return (nil, description, ops)
     }
     
+    
+    var variableValues = Dictionary<String, Double>()
+    
+    // description of the brain
+    var description :String {
+        get {
+            let result = evaluate(opStack, currentDesciption: "")
+            return result.resultDscription!
+        }
+    }
+
     init() {
         
         func learnOp(op: Op) {
@@ -91,18 +103,10 @@ class CalculatorBrain: Printable {
         learnOp(Op.UnaryOperation("cos", cos))
     }
     
-    var variableValues = Dictionary<String, Double>()
-    
-    // description of the brain
-    var description :String {
-        get {
-            return ""
-        }
-    }
-    
     func evaluate() -> Double? {
-        let (result, remainder) = evaluate(opStack)
+        let (result, resultDescription, remainder) = evaluate(opStack, currentDesciption: "")
         println("\(opStack) = \(result) with \(remainder) left over")
+        println("brain: \(resultDescription)")
         return result
     }
     
