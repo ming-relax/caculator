@@ -30,10 +30,18 @@ class ViewController: UIViewController {
     }
     
     @IBAction func enterConstant(sender: UIButton) {
+        
+        userIsInTheMiddleOfTypingANumber = false
+        
         let symbol = sender.currentTitle!
-        display.text = symbol
-        enter()
+        if let result = brain.pushOprand(symbol) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
+        updateHistory()
     }
+    
     // enter() is used to push the current operand into brain/stack
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
@@ -84,9 +92,9 @@ class ViewController: UIViewController {
     var displayValue: Double? {
         get {
             
-            if display.text? == "π" {
-                return 3.1415926
-            }
+//            if display.text? == "π" {
+//                return 3.1415926
+//            }
             return NSNumberFormatter().numberFromString(display.text!)?.doubleValue
         }
         set {
