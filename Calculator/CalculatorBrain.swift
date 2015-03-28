@@ -55,9 +55,9 @@ class CalculatorBrain: Printable {
                 return (constantMapping[symbol], currentDesciption! + symbol, remainingOps)
             case .Variable(let symbol):
                 if let variable = variableValues[symbol] {
-                    return (variable, "variable", remainingOps)
+                    return (variable, currentDesciption! + "\(symbol)", remainingOps)
                 } else {
-                    return (nil, "varialbe", remainingOps)
+                    return (nil, "", remainingOps)
                 }
             case .UnaryOperation(let symbol, let operation):
                 let operationEvaluation = evaluate(remainingOps, currentDesciption: currentDesciption)
@@ -124,7 +124,6 @@ class CalculatorBrain: Printable {
         return evaluate()
     }
     
-    
     func performOperation(symbol: String) -> Double? {
         if let operation = knownOps[symbol] {
             opStack.append(operation)
@@ -134,6 +133,7 @@ class CalculatorBrain: Printable {
     
     func clear() {
         opStack.removeAll(keepCapacity: false)
+        variableValues.removeAll(keepCapacity: false)
     }
     
 }

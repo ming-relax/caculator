@@ -42,6 +42,21 @@ class ViewController: UIViewController {
         updateHistory()
     }
     
+    
+    @IBAction func setVariable(sender: UIButton) {
+        if let symbol = sender.currentTitle? {
+            brain.variableValues[symbol] = displayValue
+        }
+    }
+
+    
+    @IBAction func enterVariable(sender: UIButton) {
+        if let symbol = sender.currentTitle? {
+            brain.pushOprand(symbol)
+        }
+    
+    }
+    
     // enter() is used to push the current operand into brain/stack
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
