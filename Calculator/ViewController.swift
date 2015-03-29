@@ -92,6 +92,7 @@ class ViewController: UIViewController {
                 displayValue = 0
             }
         }
+        updateHistory()
 
     }
     

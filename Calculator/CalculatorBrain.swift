@@ -43,7 +43,35 @@ class CalculatorBrain: Printable {
         "π": 3.1415926
     ]
     
-    
+    private func readableOpStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
+        if !ops.isEmpty {
+            var remainingOps = ops
+            let op = remainingOps.removeLast()
+            switch op {
+            case .Oprand(let oprand):
+                return ("\(oprand)", remainingOps)
+            case .Constant(let symbol):
+                return (symbol, remainingOps)
+            case .Variable(let symbol):
+                return (symbol, remainingOps)
+            case .UnaryOperation(let symbol, _):
+                let descriptionResult = readableOpStack(remainingOps)
+                if let result = descriptionResult.result {
+                    return ("\(symbol)(\(result))", remainingOps)
+                }
+            case .BinaryOperation(let symbol, _):
+                let op1DescriptionResult = readableOpStack(remainingOps)
+                if let op1Result = op1DescriptionResult.result {
+                    let op2DescriptionResult = readableOpStack(op1DescriptionResult.remainingOps)
+                    if let op2Result = op2DescriptionResult.result {
+                        return ("(\(op1Result) \(symbol) \(op2Result))", remainingOps)
+                    }
+                }
+            
+            }
+        }
+        return ("", ops)
+    }
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOps = ops
@@ -82,7 +110,7 @@ class CalculatorBrain: Printable {
     
     // description of the brain
     var description :String {
-        return "brain"
+        return readableOpStack(opStack).result!
     }
 
     init() {
@@ -103,7 +131,7 @@ class CalculatorBrain: Printable {
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder) left over")
-        //println("brain: \(resultDescription)")
+        println("brain: \(self)")
         return result
     }
     
