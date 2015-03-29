@@ -44,37 +44,37 @@ class CalculatorBrain: Printable {
     ]
     
     
-    private func evaluate(ops: [Op], currentDesciption: String?) -> (result: Double?, resultDscription: String?, remainingOps: [Op]) {
+    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOps = ops
             let op = remainingOps.removeLast()
             switch op {
             case .Oprand(let oprand):
-                return (oprand, currentDesciption! + "\(oprand)", remainingOps)
+                return (oprand, remainingOps)
             case .Constant(let symbol):
-                return (constantMapping[symbol], currentDesciption! + symbol, remainingOps)
+                return (constantMapping[symbol], remainingOps)
             case .Variable(let symbol):
                 if let variable = variableValues[symbol] {
-                    return (variable, currentDesciption! + "\(symbol)", remainingOps)
+                    return (variable, remainingOps)
                 } else {
-                    return (nil, "", remainingOps)
+                    return (nil, remainingOps)
                 }
             case .UnaryOperation(let symbol, let operation):
-                let operationEvaluation = evaluate(remainingOps, currentDesciption: currentDesciption)
+                let operationEvaluation = evaluate(remainingOps)
                 if let operand = operationEvaluation.result {
-                   return (operation(operand), "\(symbol)(\(operationEvaluation.resultDscription!))", operationEvaluation.remainingOps)
+                   return (operation(operand), operationEvaluation.remainingOps)
                 }
             case .BinaryOperation(let symbol, let operation):
-                let op1Evaluation = evaluate(remainingOps, currentDesciption: "")
+                let op1Evaluation = evaluate(remainingOps)
                 if let operand1 = op1Evaluation.result {
-                    let op2Evaluation = evaluate(op1Evaluation.remainingOps, currentDesciption: "")
+                    let op2Evaluation = evaluate(op1Evaluation.remainingOps)
                     if let operand2 = op2Evaluation.result {
-                        return (operation(operand1, operand2), "\(currentDesciption!) \(op1Evaluation.resultDscription!) \(symbol) \(op2Evaluation.resultDscription!)", op2Evaluation.remainingOps)
+                        return (operation(operand1, operand2), op2Evaluation.remainingOps)
                     }
                 }
             }
         }
-        return (nil, description, ops)
+        return (nil, ops)
     }
     
     
@@ -82,10 +82,7 @@ class CalculatorBrain: Printable {
     
     // description of the brain
     var description :String {
-        get {
-            let (_, resultDescription, _) = evaluate(opStack, currentDesciption: "")
-            return resultDescription!
-        }
+        return "brain"
     }
 
     init() {
@@ -104,9 +101,9 @@ class CalculatorBrain: Printable {
     }
     
     func evaluate() -> Double? {
-        let (result, resultDescription, remainder) = evaluate(opStack, currentDesciption: "")
+        let (result, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder) left over")
-        println("brain: \(resultDescription)")
+        //println("brain: \(resultDescription)")
         return result
     }
     
@@ -115,6 +112,7 @@ class CalculatorBrain: Printable {
         return evaluate()
     }
     
+    // push a variable or constant into stack
     func pushOprand(symbol: String) -> Double? {
         if constantMapping[symbol] != nil {
             opStack.append(Op.Constant(symbol))

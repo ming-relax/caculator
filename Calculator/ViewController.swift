@@ -32,9 +32,13 @@ class ViewController: UIViewController {
     @IBAction func enterConstant(sender: UIButton) {
         
         userIsInTheMiddleOfTypingANumber = false
+    
+        let symbol = sender.currentTitle
+        if symbol == nil {
+            return
+        }
         
-        let symbol = sender.currentTitle!
-        if let result = brain.pushOprand(symbol) {
+        if let result = brain.pushOprand(symbol!) {
             displayValue = result
         } else {
             displayValue = 0
@@ -100,6 +104,7 @@ class ViewController: UIViewController {
     
     
     func updateHistory () {
+        println("updateHistory: \(brain)")
         history.text = "\(brain)"
     }
     
